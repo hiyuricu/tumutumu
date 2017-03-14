@@ -1,4 +1,6 @@
 ﻿#pragma strict
+
+import UnityEngine.UI;
  
 public
 var ballPrefab: GameObject; //ボールのプレハブ
@@ -14,11 +16,57 @@ var lastBall: GameObject;
 private
 var currentName: String;
 
+private
+var isPlaying = false;
+
+public
+var timer: GameObject; //タイマーとなるオブジェクト
+private
+var timerText:Text; //タイマーのテキスト
+private
+var timeLimit = 90; //制限時間
+private
+var countTime = 0; //カウントダウンの秒数
+
 public
 var score: GameObject; //スコア表示
+private
+var scoreText: Text; //スコア表示のテキスト
+private
+var currentScore = 0; //現在のスコア
  
 function Start() {
-  DropBall(55); //ボールを指定した数上から降らせる
+  timerText = timer.GetComponent(Text);
+  scoreText = score.GetComponent(Text); //scoreTextを設定
+  CountDown();
+  DropBall(55);
+}
+
+private
+function CountDown() {
+  var count = countTime;
+  while (count > 0) {
+    timerText.text = count.ToString(); //カウントダウンのテキストを変更
+    yield WaitForSeconds(1); //1秒待つ
+    count -= 1; //カウントを1つ減らす
+  }
+  timerText.text = "90";
+  isPlaying = true;
+  yield WaitForSeconds(1);
+  StartTimer(); //制限時間のカウントを開始
+}
+ 
+private
+function StartTimer() {
+  var count = timeLimit;
+  while (count > 0) {
+    timerText.text = count.ToString();
+    yield WaitForSeconds(1);
+    count -= 1;
+  }
+  timerText.text = "終";
+  OnDragEnd();
+  isPlaying = false;
 }
 
 private
@@ -36,16 +84,19 @@ function DropBall(count: int) {
   }
 }
 
-function Update() {
-    if (Input.GetMouseButton(0) && firstBall == null) {
+function Update(){
+  if(isPlaying){
+   if (Input.GetMouseButton(0) && firstBall == null) {
       OnDragStart();
     } else if (Input.GetMouseButtonUp(0)) {
       OnDragEnd();
     } else if (firstBall != null) {
       OnDragging();
     }
+  }
+  scoreText.text = "" + currentScore;
 }
- 
+
 private
 function OnDragStart() {
   var col = GetCurrentHitCollider();
@@ -68,15 +119,13 @@ function OnDragEnd() {
       for (var i = 0; i < length; i++) {
         Destroy(removableBallList[i]);
       }
+ 
+      currentScore += 50 * length * (length + 1) - 300 + 50 * length;
       DropBall(length);
     } else {
       for (var j = 0; j < length; j++) {
         var listedBall: GameObject = removableBallList[j];
- 
-        //ここに追加
         ChangeColor(listedBall, 1.0);
- 
- 
         listedBall.name = listedBall.name.Substring(1, 5);
       }
     }
@@ -103,7 +152,7 @@ function OnDragging() {
     }
   }
 }
- 
+
 function PushToList(obj: GameObject) {
   lastBall = obj;
 
