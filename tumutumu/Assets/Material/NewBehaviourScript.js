@@ -3,9 +3,9 @@
 import UnityEngine.UI;
  
 public
-var ballPrefab: GameObject; //ボールのプレハブ
+var ballPrefab: GameObject;
 public
-var ballSprites: Sprite[]; //ボールの画像のリスト
+var ballSprites: Sprite[];
 
 private
 var firstBall: GameObject;
@@ -20,24 +20,24 @@ private
 var isPlaying = false;
 
 public
-var timer: GameObject; //タイマーとなるオブジェクト
+var timer: GameObject;
 private
-var timerText:Text; //タイマーのテキスト
+var timerText:Text;
 private
-var timeLimit = 90; //制限時間
+var timeLimit = 90;
 private
-var countTime = 0; //カウントダウンの秒数
+var countTime = 0;
 
 public
-var score: GameObject; //スコア表示
+var score: GameObject;
 private
-var scoreText: Text; //スコア表示のテキスト
+var scoreText: Text;
 private
-var currentScore = 0; //現在のスコア
- 
+var currentScore = 0;
+
 function Start() {
   timerText = timer.GetComponent(Text);
-  scoreText = score.GetComponent(Text); //scoreTextを設定
+  scoreText = score.GetComponent(Text);
   CountDown();
   DropBall(55);
 }
@@ -46,14 +46,14 @@ private
 function CountDown() {
   var count = countTime;
   while (count > 0) {
-    timerText.text = count.ToString(); //カウントダウンのテキストを変更
-    yield WaitForSeconds(1); //1秒待つ
-    count -= 1; //カウントを1つ減らす
+    timerText.text = count.ToString();
+    yield WaitForSeconds(1);
+    count -= 1;
   }
   timerText.text = "90";
   isPlaying = true;
   yield WaitForSeconds(1);
-  StartTimer(); //制限時間のカウントを開始
+  StartTimer();
 }
  
 private
@@ -72,11 +72,11 @@ function StartTimer() {
 private
 function DropBall(count: int) {
   for (var i = 0; i < count; i++) {
-    var ball = Instantiate(ballPrefab); //ボールのプレハブを読み込み
-    ball.transform.position.x = Random.Range(-2.0, 2.0); //ボールのｘ座標をランダムに設定
-    ball.transform.position.y = 7; //ボールのｙ座標を調整
-    ball.transform.eulerAngles.z = Random.Range(-40, 40); //ボールの角度をランダムに設定
-    var spriteId: int = Random.Range(0, 5); //ボールの画像のid(ボールの色)をランダムに設定
+    var ball = Instantiate(ballPrefab);
+    ball.transform.position.x = Random.Range(-2.0, 2.0);
+    ball.transform.position.y = 7;
+    ball.transform.eulerAngles.z = Random.Range(-40, 40);
+    var spriteId: int = Random.Range(0, 5);
     ball.name = "Ball" + spriteId; //ボールの名前を画像のidに合わせ変更
     var ballTexture = ball.GetComponent(SpriteRenderer); //ボールの画像を管理している要素を取得
     ballTexture.sprite = ballSprites[spriteId]; //ボールの画像をidに合わせて変更
