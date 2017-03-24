@@ -1,7 +1,7 @@
 ﻿#pragma strict
 
 import UnityEngine.UI;
- 
+
 public
 var ballPrefab: GameObject;
 public
@@ -55,7 +55,7 @@ function CountDown() {
   yield WaitForSeconds(1);
   StartTimer();
 }
- 
+
 private
 function StartTimer() {
   var count = timeLimit;
@@ -77,10 +77,10 @@ function DropBall(count: int) {
     ball.transform.position.y = 7;
     ball.transform.eulerAngles.z = Random.Range(-40, 40);
     var spriteId: int = Random.Range(0, 5);
-    ball.name = "Ball" + spriteId; //ボールの名前を画像のidに合わせ変更
-    var ballTexture = ball.GetComponent(SpriteRenderer); //ボールの画像を管理している要素を取得
-    ballTexture.sprite = ballSprites[spriteId]; //ボールの画像をidに合わせて変更
-    yield WaitForSeconds(0.05); //次のボールを生成するまで一定時間待つ
+    ball.name = "Ball" + spriteId;
+    var ballTexture = ball.GetComponent(SpriteRenderer);
+    ballTexture.sprite = ballSprites[spriteId];
+    yield WaitForSeconds(0.05);
   }
 }
 
@@ -110,7 +110,7 @@ function OnDragStart() {
     }
   }
 }
- 
+
 private
 function OnDragEnd() {
   if (firstBall != null) {
@@ -119,7 +119,7 @@ function OnDragEnd() {
       for (var i = 0; i < length; i++) {
         Destroy(removableBallList[i]);
       }
- 
+
       currentScore += 50 * length * (length + 1) - 300 + 50 * length;
       DropBall(length);
     } else {
@@ -132,21 +132,17 @@ function OnDragEnd() {
     firstBall = null;
   }
 }
- 
+
 private
 function OnDragging() {
   var col = GetCurrentHitCollider();
   if (col != null) {
-    //なにかをドラッグしているとき
     var colObj = col.gameObject;
     if (colObj.name == currentName) {
-      //現在リストに追加している色と同じ色のボールのとき
       if (lastBall != colObj) {
-        //直前にリストにいれたのと異なるボールのとき
-        var dist = Vector2.Distance(lastBall.transform.position, colObj.transform.position); //直前のボールと現在のボールの距離を計算
+        var dist = Vector2.Distance(lastBall.transform.position, colObj.transform.position);
         if (dist <= 1.5) {
-          //ボール間の距離が一定値以下のとき
-          PushToList(colObj); //消去するリストにボールを追加
+          PushToList(colObj);
         }
       }
     }
@@ -161,7 +157,7 @@ function PushToList(obj: GameObject) {
   removableBallList.push(obj);
   obj.name = "_" + obj.name;
 }
- 
+
 function GetCurrentHitCollider() {
   var hit: RaycastHit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
   return hit.collider;
@@ -169,6 +165,6 @@ function GetCurrentHitCollider() {
 
 private
 function ChangeColor(obj: GameObject, transparency: float) {
-  var ballTexture = obj.GetComponent(SpriteRenderer); //ボールの画像を管理している要素を取得
-  ballTexture.color.a = transparency; //透明度を設定
+  var ballTexture = obj.GetComponent(SpriteRenderer);
+  ballTexture.color.a = transparency;
 }
